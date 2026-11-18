@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Corporate Accounts & Liquidity — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Treasury & Working Capital</span>
+                <span class="mx-2">•</span>
+                <span>Bank & Cash Ledger</span>
+            </div>
+            <h1 class="display-1 mb-1">Corporate Bank & Cash Accounts</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Total Liquid Capital: <strong class="text-wine font-mono fs-5">{{ total_balance|inr }}</strong> &bull; Currency: <strong>Indian Rupee (INR - ₹)</strong>
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('transfers_view') }}" class="btn-luxury btn-luxury-outline">
+                <i class="bi bi-arrow-repeat me-1"></i> Internal Transfer
+            </a>
+            <button type="button" class="btn-luxury btn-luxury-wine" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                <i class="bi bi-plus-lg me-1"></i> Add Account
+            </button>
+        </div>
+    </div>
+
+    <!-- Accounts Cards Grid -->
+    <div class="row g-4 mb-4">
+        {% for acc in accounts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card-luxury {% if acc.type == 'Credit' %}card-luxury-wine{% else %}card-luxury-accent{% endif %} h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
+                        <div>
+                            <span class="badge-luxury {% if acc.type == 'Cash' %}badge-luxury-neutral{% elif acc.type == 'Credit' %}badge-luxury-warning{% else %}badge-luxury-wine{% endif %} me-1">
+                                {{ acc.type }}
+                            </span>
+                            <span class="small font-mono text-muted">{{ acc.bank_name or 'Commercial Banking' }}</span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end rounded-0 border shadow-sm">
+                                <li>
+                                    <a class="dropdown-item small" href="{{ url_for('view_transactions', account=acc.account_id) }}">
+                                        <i class="bi bi-list-check me-2"></i> View Account Ledger
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <form method="POST" action="{{ url_for('delete_account', id=acc.account_id) }}" onsubmit="return confirm('Deleting this account will permanently cascade to all associated transactions. Proceed?');" class="m-0">
+                                        <button type="submit" class="dropdown-item small text-danger">
+                                            <i class="bi bi-trash me-2"></i> Delete Account
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4 class="font-serif mb-1">{{ acc.name }}</h4>
+                    {% if acc.account_number %}
+                    <div class="small font-mono text-muted mb-3" style="font-size: 0.75rem;">
+                        A/C: {{ acc.account_number }} {% if acc.ifsc_code %}&bull; IFSC: {{ acc.ifsc_code }}{% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-3">
+                        <span class="eyebrow-label">Book Balance</span>
+                        <div class="financial-numeral fs-2 fw-bold {% if acc.type == 'Credit' %}text-danger{% elif acc.balance >= 0 %}text-wine{% else %}text-danger{% endif %}">
+                            {{ acc.balance|inr }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 mt-3 border-top d-flex justify-content-between align-items-center">
+                    <span class="small text-muted font-mono" style="font-size: 0.72rem;">
+                        Created: {{ acc.created_at.strftime('%d-%m-%Y') if acc.created_at else 'Active' }}
+                    </span>
+                    <a href="{{ url_for('view_transactions', account=acc.account_id) }}" class="small text-wine fw-bold text-decoration-none">
+                        Ledger &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- Modal: Add New Account -->
+<div class="modal fade" id="addAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border">
+            <div class="modal-header bg-secondary rounded-0">
+                <h5 class="modal-title font-serif mb-0">Register Corporate Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_account') }}" class="form-luxury">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Account Label / Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. ICICI Bank CC Account, Surat Mill Petty Cash" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Account Type <span class="text-danger">*</span></label>
+                            <select name="type" class="form-select" required>
+                                <option value="Checking" selected>Checking / Current Account</option>
+                                <option value="Savings">Savings / Reserve Account</option>
+                                <option value="Credit">Credit / Cash Credit (CC) Facility</option>
+                                <option value="Cash">Cash in Hand / Factory Petty Cash</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Opening Balance (₹ INR)</label>
+                            <input type="number" step="0.01" name="balance" class="form-control font-mono" value="0.00" required>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Bank Institution Name</label>
+                            <input type="text" name="bank_name" class="form-control" placeholder="e.g. HDFC Bank, SBI, ICICI">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Account Number</label>
+                            <input type="text" name="account_number" class="form-control font-mono" placeholder="Corporate A/C Number">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_code" class="form-control font-mono" placeholder="e.g. HDFC0001234">
+                    </div>
+                </div>
+                <div class="modal-footer bg-secondary">
+                    <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-luxury btn-luxury-wine btn-luxury-sm">Register Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

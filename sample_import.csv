@@ -1,0 +1,11 @@
+date,amount,type,category,description
+2026-10-22,240000.00,Expense,Raw cotton purchases,Purchase of 2000 kg of raw cotton Shankar-6 from Gujarat Cotton Traders Co.
+2026-10-22,88000.00,Expense,Cotton yarn and polyester fibre purchases,Purchase of 800 kg of cotton yarn 40s count from Vardhman Spinning Mills
+2026-10-23,145000.00,Expense,Factory electricity and utilities,Payment for factory electricity - Substation 3 HT industrial feeder
+2026-10-23,18500.00,Expense,Transportation and freight,Freight charges for a raw-material shipment from Rajkot to Coimbatore mill
+2026-10-24,520000.00,Income,Sales revenue,Sale of textile materials: 3500 kg carded yarn to Arvind Texfab Mills (Inv #TX-2026-104)
+2026-10-24,350000.00,Income,Customer receipts,Partial payment received against a customer invoice #TX-2026-104 from Arvind Texfab
+2026-10-25,180000.00,Expense,Supplier payments,Outstanding payment due to a fictional fibre supplier Gujarat Cotton Traders
+2026-10-25,42000.00,Expense,Textile dyes, pigments, and processing chemicals,Reactive dye pigments and sodium hydrosulfite chemicals from Surat Dyechem
+2026-10-26,24500.00,Expense,Machine maintenance,Machine maintenance & spindle overhaul - Ring Frame Loom #4
+2026-10-26,16500.00,Expense,Packaging materials,Heavy duty poly woven yarn packing bags and corrugated cartons

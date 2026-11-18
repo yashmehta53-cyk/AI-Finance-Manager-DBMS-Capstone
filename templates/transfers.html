@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Fund Transfers — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Liquidity Management</span>
+                <span class="mx-2">•</span>
+                <span>Inter-Account Reallocation</span>
+            </div>
+            <h1 class="display-1 mb-1">Internal Fund Transfers</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Move working capital between operational current accounts, factory petty cash, and credit facility lines.
+            </p>
+        </div>
+        <div>
+            <button type="button" class="btn-luxury btn-luxury-wine" data-bs-toggle="modal" data-bs-target="#newTransferModal">
+                <i class="bi bi-arrow-repeat me-1"></i> New Fund Transfer
+            </button>
+        </div>
+    </div>
+
+    <!-- Transfer Execution Modal -->
+    <div class="modal fade" id="newTransferModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-0 border">
+                <div class="modal-header bg-secondary rounded-0">
+                    <h5 class="modal-title font-serif">Execute Inter-Account Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ url_for('add_transfer') }}" class="form-luxury">
+                    <div class="modal-body text-start">
+                        <div class="mb-3">
+                            <label>From Source Account</label>
+                            <select name="from_account_id" class="form-select" required>
+                                {% for a in accounts %}
+                                <option value="{{ a.account_id }}">{{ a.name }} (Balance: {{ a.balance|inr }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>To Destination Account</label>
+                            <select name="to_account_id" class="form-select" required>
+                                {% for a in accounts %}
+                                <option value="{{ a.account_id }}">{{ a.name }} (Balance: {{ a.balance|inr }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Transfer Amount (₹ INR)</label>
+                            <input type="number" step="0.01" name="amount" class="form-control" placeholder="0.00" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Transfer Date</label>
+                            <input type="date" name="transfer_date" class="form-control" value="{{ today_date }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Reference / Cheque / UTR #</label>
+                            <input type="text" name="reference_no" class="form-control" placeholder="Optional transaction ID">
+                        </div>
+                        <div class="mb-3">
+                            <label>Internal Purpose / Notes</label>
+                            <input type="text" name="notes" class="form-control" placeholder="e.g. Petty cash replenishment for Coimbatore mill">
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-secondary">
+                        <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-luxury btn-luxury-wine btn-luxury-sm">Execute Transfer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer History Table -->
+    <div class="card-luxury card-luxury-accent">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Audit Trail</span>
+                <h3 class="fs-4 mb-0">Historical Transfer Postings</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">{{ transfers|length }} Entries</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th>Transfer Date</th>
+                        <th>From Account</th>
+                        <th>To Account</th>
+                        <th>Reference</th>
+                        <th>Notes</th>
+                        <th class="text-end">Amount Transferred</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tr in transfers %}
+                    <tr>
+                        <td class="font-mono text-muted small">{{ tr.transfer_date|in_date }}</td>
+                        <td class="fw-semibold text-danger">
+                            <i class="bi bi-dash-circle me-1"></i> {{ tr.from_account.name if tr.from_account else 'Account #' ~ tr.from_account_id }}
+                        </td>
+                        <td class="fw-semibold text-success">
+                            <i class="bi bi-plus-circle me-1"></i> {{ tr.to_account.name if tr.to_account else 'Account #' ~ tr.to_account_id }}
+                        </td>
+                        <td class="font-mono small">{{ tr.reference_no or '—' }}</td>
+                        <td class="small text-secondary">{{ tr.notes or '—' }}</td>
+                        <td class="text-end font-mono fw-bold text-wine fs-6">
+                            {{ tr.amount|inr }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-arrow-repeat fs-1 d-block mb-2 text-wine"></i>
+                            No inter-account transfers executed yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

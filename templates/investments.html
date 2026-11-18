@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Corporate Treasury & Reserves — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Treasury & Yield Management</span>
+                <span class="mx-2">•</span>
+                <span>Liquid Mutual Funds, T-Bills & Equities</span>
+            </div>
+            <h1 class="display-1 mb-1">Corporate Treasury & Yield Reserves</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Capital deployed in yield-bearing treasury assets: <strong class="text-wine font-mono fs-5">{{ total_invested|inr }}</strong> &bull; Currency: <strong>Indian Rupee (INR - ₹)</strong>
+            </p>
+        </div>
+        <div>
+            <button type="button" class="btn-luxury btn-luxury-wine" data-bs-toggle="modal" data-bs-target="#addInvestmentModal">
+                <i class="bi bi-plus-lg me-1"></i> Log Treasury Holding
+            </button>
+        </div>
+    </div>
+
+    <!-- Portfolio Summary & Allocation -->
+    <div class="row g-4 mb-4">
+        <!-- Holdings Table -->
+        <div class="col-lg-8">
+            <div class="card-luxury card-luxury-accent h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label">Book Valuation</span>
+                        <h4 class="mb-0">Active Treasury Positions</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-neutral">{{ investments|length }} Securities</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-luxury">
+                        <thead>
+                            <tr>
+                                <th>Instrument / Symbol</th>
+                                <th class="text-end">Units / Qty</th>
+                                <th class="text-end">Acquisition Price</th>
+                                <th>Acquisition Date</th>
+                                <th class="text-end">Total Cost Basis</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inv in investments %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold font-mono text-wine fs-6">{{ inv.instrument }}</div>
+                                </td>
+                                <td class="text-end font-mono">{{ inv.quantity }}</td>
+                                <td class="text-end font-mono text-muted">{{ inv.buy_price|inr }}</td>
+                                <td class="font-mono text-muted small">{{ inv.buy_date|in_date }}</td>
+                                <td class="text-end font-mono fw-bold fs-6 text-dark">{{ inv.total_cost|inr }}</td>
+                                <td class="text-center">
+                                    <form method="POST" action="{{ url_for('delete_investment', id=inv.inv_id) }}" onsubmit="return confirm('Divest / remove holding {{ inv.instrument }}?');" class="d-inline m-0">
+                                        <button type="submit" class="btn-luxury btn-luxury-outline btn-luxury-sm text-danger py-0 px-2" title="Divest">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-graph-up-arrow fs-1 d-block mb-2 text-wine"></i>
+                                    No treasury instruments recorded.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Allocation Overview -->
+        <div class="col-lg-4">
+            <div class="card-luxury card-luxury-wine h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <div>
+                            <span class="eyebrow-label">Capital Distribution</span>
+                            <h4 class="mb-0">Allocation</h4>
+                        </div>
+                        <span class="badge-luxury badge-luxury-neutral">Ind AS Cost Basis</span>
+                    </div>
+
+                    <div class="p-3 bg-secondary border mb-3">
+                        <span class="eyebrow-label">Total Capital Deployed</span>
+                        <div class="financial-numeral fs-2 text-wine">{{ total_invested|inr }}</div>
+                        <div class="small text-muted font-mono">Computed as <code>quantity &times; buy_price</code></div>
+                    </div>
+
+                    <p class="small text-muted-custom font-sans">
+                        Corporate treasury reserves deployed in ultra-short liquid funds, sovereign T-Bills, or bluechip industrial equities.
+                    </p>
+                </div>
+
+                <div class="pt-3 border-top small font-mono text-muted">
+                    Valuation basis: Historical Acquisition Cost (Ind AS 109)
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal: Log Treasury Holding -->
+<div class="modal fade" id="addInvestmentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border">
+            <div class="modal-header bg-secondary rounded-0">
+                <h5 class="modal-title font-serif mb-0">Record Treasury Holding</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_investment') }}" class="form-luxury">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Security Symbol / Fund Name <span class="text-danger">*</span></label>
+                        <input type="text" name="instrument" class="form-control font-mono" placeholder="e.g. HDFC-LIQUID-DIR, RELIANCE, TBILL-91D" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Quantity / Units <span class="text-danger">*</span></label>
+                            <input type="number" min="1" name="quantity" class="form-control font-mono" placeholder="100" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Purchase Price per Unit (₹ INR) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" name="buy_price" class="form-control font-mono" placeholder="1500.00" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Acquisition Date <span class="text-danger">*</span></label>
+                        <input type="date" name="buy_date" class="form-control font-mono" value="{{ today_date }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-secondary">
+                    <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-luxury btn-luxury-wine btn-luxury-sm">Record Holding</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

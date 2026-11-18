@@ -1,0 +1,922 @@
+/* =====================================================================
+   AI FINANCE MANAGER — SOPHISTICATED MINIMALIST EDITORIAL BRUTALISM
+   Aesthetic: Swiss International Typographic Style × Luxury Financial Journal
+   Typography: Instrument Serif (Headlines & Figures) + Helvetica (UI & Body)
+   Palette: Warm Ivory (#F5F3EE), Soft Paper (#ECEAE4), Near-Black (#171717),
+            Muted Grey (#77746F), Subtle Charcoal Borders, Deep Signal Red (#B42318)
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&display=swap');
+
+/* Design Tokens & CSS Variables */
+:root {
+    /* 4. Color Palette */
+    --bg-main: #F5F3EE;            /* Warm Ivory */
+    --bg-secondary: #ECEAE4;       /* Soft Paper */
+    --bg-surface: #FFFFFF;         /* Crisp White */
+    --bg-surface-alt: #ECEAE4;
+    --bg-elevated: #FFFFFF;
+
+    --text-main: #171717;          /* Near-black */
+    --text-primary: #171717;
+    --text-secondary: #524F4A;
+    --text-muted: #77746F;         /* Muted grey */
+    --text-inverted: #FFFFFF;
+
+    --border-color: #D4D1C9;       /* Subtle neutral grey */
+    --border-subtle: #E2DFD8;
+    --border-dark: #171717;        /* Charcoal / Near-black */
+    --border-neutral: #D4D1C9;
+
+    /* Signal Red Accent (Used Sparingly) */
+    --accent-red: #B42318;         /* Deep signal red */
+    --accent-red-hover: #911B12;
+    --accent-red-tint: rgba(180, 35, 24, 0.06);
+
+    /* Legacy Token Compatibility Mapped to Monochromatic Palette */
+    --primary-wine: #171717;
+    --primary-wine-light: #2A2A2A;
+    --primary-wine-dark: #000000;
+    --wine-tint: rgba(23, 23, 23, 0.04);
+    --antique-brass: #B42318;
+    --antique-brass-light: #C93B30;
+    --antique-brass-dark: #911B12;
+    --brass-tint: rgba(180, 35, 24, 0.08);
+
+    --success-color: #171717;
+    --success-bg: #ECEAE4;
+    --warning-color: #8F6B12;
+    --warning-bg: #FAF5E8;
+    --danger-color: #B42318;
+    --danger-bg: #FDF2F2;
+    --info-color: #171717;
+    --info-bg: #ECEAE4;
+
+    /* 3. Typography System */
+    --font-heading: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', Menlo, Consolas, monospace;
+
+    /* Minimal / No Blur Shadows */
+    --shadow-subtle: none;
+    --shadow-brutalist: 2px 2px 0px #171717;
+}
+
+/* =====================================================================
+   Base Reset, Body, & Universal Architecture Rules
+   ===================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    border-radius: 0 !important; /* Non-negotiable sharp brutalist geometry */
+}
+
+html {
+    font-size: 15px;
+    background-color: var(--bg-main);
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+}
+
+/* =====================================================================
+   Typography Scale & Hierarchy
+   ===================================================================== */
+h1, h2, h3, h4, h5, .editorial-heading, .serif-heading, .modal-title, .card-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 0.5rem;
+}
+
+h1, .display-1 { 
+    font-size: 3.25rem; 
+    letter-spacing: -0.025em; 
+    line-height: 1.02; 
+}
+h2, .display-2 { 
+    font-size: 2.35rem; 
+    letter-spacing: -0.02em; 
+    line-height: 1.08; 
+}
+h3, .display-3 { 
+    font-size: 1.65rem; 
+    line-height: 1.15; 
+}
+h4 { 
+    font-size: 1.35rem; 
+    line-height: 1.2; 
+}
+h5 { 
+    font-size: 1.15rem; 
+    line-height: 1.25; 
+}
+
+p {
+    font-family: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.font-serif { font-family: var(--font-heading) !important; }
+.font-sans { font-family: var(--font-body) !important; }
+.font-mono { 
+    font-family: var(--font-mono) !important; 
+    font-variant-numeric: tabular-nums lining-nums;
+}
+.tabular-nums { font-variant-numeric: tabular-nums lining-nums; }
+
+/* Micro-Labels & Financial Eyebrows */
+.eyebrow-label, .stat-label {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: inline-block;
+}
+
+.financial-numeral {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--text-main);
+}
+
+/* Color Helpers Override to Monochromatic + Signal Red */
+.text-wine { color: var(--text-main) !important; }
+.text-brass { color: var(--text-main) !important; }
+.text-muted-custom { color: var(--text-muted) !important; }
+.bg-wine { background-color: var(--text-main) !important; color: #FFFFFF !important; }
+.bg-brass { background-color: var(--accent-red) !important; color: #FFFFFF !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+
+.text-danger, .text-expense { color: var(--accent-red) !important; }
+.text-success, .text-income { color: var(--text-main) !important; }
+.text-warning { color: var(--warning-color) !important; }
+
+/* =====================================================================
+   Header & Swiss International Navigation System
+   ===================================================================== */
+.navbar-luxury {
+    background-color: var(--text-main) !important;
+    border-bottom: 2px solid var(--text-main) !important;
+    padding: 0.65rem 1.5rem !important;
+    box-shadow: none !important;
+}
+
+.navbar-luxury .navbar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 400;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.navbar-luxury .brand-tag {
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background-color: var(--bg-secondary);
+    color: var(--text-main);
+    border: 1px solid #FFFFFF;
+    padding: 2px 7px;
+    margin-left: 10px;
+    line-height: 1.2;
+}
+
+.navbar-luxury .nav-link {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(255, 255, 255, 0.75) !important;
+    padding: 0.55rem 0.85rem !important;
+    border-bottom: 2px solid transparent;
+    transition: color 0.12s ease-in-out, border-color 0.12s ease-in-out;
+}
+
+.navbar-luxury .nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: transparent !important;
+}
+
+.navbar-luxury .nav-link.active {
+    color: #FFFFFF !important;
+    border-bottom: 2px solid var(--accent-red) !important;
+    background-color: transparent !important;
+}
+
+/* Override inline color attribute for AI link */
+.navbar-luxury .nav-link[style*="color"] {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.navbar-luxury .nav-link[style*="color"]:hover {
+    color: #FFFFFF !important;
+}
+.navbar-luxury .nav-link[style*="color"].active {
+    color: #FFFFFF !important;
+    border-bottom: 2px solid var(--accent-red) !important;
+}
+
+/* User Profile Badge in Nav */
+.navbar-luxury .dropdown-toggle span[style*="border"] {
+    border-color: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-body) !important;
+    font-weight: 700 !important;
+}
+
+/* Dropdown Menu (Swiss Minimalist Architecture) */
+.dropdown-menu {
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--text-main) !important;
+    border-radius: 0 !important;
+    box-shadow: 4px 4px 0px rgba(23, 23, 23, 0.12) !important;
+    padding: 0 !important;
+    min-width: 220px;
+}
+
+.dropdown-item {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-main) !important;
+    padding: 0.65rem 1rem !important;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: var(--bg-secondary) !important;
+    color: var(--accent-red) !important;
+}
+
+.dropdown-item.text-danger {
+    color: var(--accent-red) !important;
+}
+
+.dropdown-divider {
+    border-top: 1px solid var(--border-neutral) !important;
+    margin: 0 !important;
+}
+
+/* =====================================================================
+   Financial Stat Boxes & Metric Tiles
+   ===================================================================== */
+.stat-box {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 1.4rem 1.5rem;
+    height: 100%;
+    position: relative;
+    border-top: 2px solid var(--text-main);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.12s ease;
+}
+
+.stat-box:hover {
+    border-color: var(--text-main);
+}
+
+.stat-box.accent-wine,
+.stat-box.accent-brass {
+    border-top-color: var(--text-main) !important;
+}
+
+.stat-box.accent-danger {
+    border-top-color: var(--accent-red) !important;
+}
+
+.stat-box.accent-green {
+    border-top-color: var(--text-main) !important;
+}
+
+.stat-box .stat-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: var(--text-muted);
+    margin-bottom: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-box .stat-value {
+    font-family: var(--font-heading);
+    font-size: 2.75rem;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+.stat-box .stat-value.text-wine,
+.stat-box .stat-value.text-brass {
+    color: var(--text-main) !important;
+}
+
+.stat-box .stat-value.text-danger {
+    color: var(--accent-red) !important;
+}
+
+.stat-box .stat-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+}
+
+/* =====================================================================
+   Institutional Financial Cards
+   ===================================================================== */
+.card-luxury {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    border-top: 2px solid var(--text-main);
+}
+
+.card-luxury-accent {
+    border-top: 2px solid var(--text-main) !important;
+}
+
+.card-luxury-wine {
+    border-top: 2px solid var(--text-main) !important;
+}
+
+.card-luxury[style*="border-top: 3px solid var(--border-dark)"] {
+    border-top: 2px solid var(--text-main) !important;
+}
+
+.card-luxury .card-title {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 400;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+}
+
+/* Compatibility with legacy card-brutalist */
+.card-brutalist {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-top: 2px solid var(--text-main);
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem;
+}
+
+.card-brutalist-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-brutalist-body {
+    padding: 1.5rem;
+}
+
+/* =====================================================================
+   Swiss Architectural Data Tables
+   ===================================================================== */
+.table-luxury, .table-brutalist, .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-surface);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.table-luxury th, .table-brutalist th, .table th {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.1rem;
+    border-top: 1px solid var(--border-dark) !important;
+    border-bottom: 2px solid var(--border-dark) !important;
+    border-left: none;
+    border-right: none;
+    white-space: nowrap;
+}
+
+.table-luxury td, .table-brutalist td, .table td {
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    vertical-align: middle;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+.table-luxury tbody tr:hover, .table-brutalist tbody tr:hover, .table tbody tr:hover {
+    background-color: var(--bg-secondary) !important;
+}
+
+.table-responsive {
+    border: 1px solid var(--border-color);
+}
+
+/* P&L and Balance Sheet Specific Structure */
+.table-luxury tr.table-light td {
+    background-color: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-dark) !important;
+    border-bottom: 1px solid var(--border-dark) !important;
+}
+
+/* =====================================================================
+   Minimalist Brutalist Button System
+   ===================================================================== */
+.btn-luxury, .btn-brutalist, .btn {
+    font-family: var(--font-body) !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    border-radius: 0 !important;
+    padding: 0.65rem 1.35rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    cursor: pointer;
+    box-shadow: none !important;
+}
+
+/* Primary Button: Near-black #171717 */
+.btn-luxury-wine, .btn-brutalist-primary, .btn-primary {
+    background-color: var(--text-main) !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--text-main) !important;
+}
+
+.btn-luxury-wine:hover, .btn-brutalist-primary:hover, .btn-primary:hover {
+    background-color: var(--accent-red) !important;
+    border-color: var(--accent-red) !important;
+    color: #FFFFFF !important;
+}
+
+/* Signal Red Accent Button */
+.btn-luxury-brass {
+    background-color: var(--accent-red) !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--accent-red) !important;
+}
+
+.btn-luxury-brass:hover {
+    background-color: var(--accent-red-hover) !important;
+    border-color: var(--accent-red-hover) !important;
+    color: #FFFFFF !important;
+}
+
+/* Outline Button */
+.btn-luxury-outline, .btn-brutalist-outline, .btn-outline-primary, .btn-outline-secondary {
+    background-color: transparent !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-dark) !important;
+}
+
+.btn-luxury-outline:hover, .btn-brutalist-outline:hover, .btn-outline-primary:hover, .btn-outline-secondary:hover {
+    background-color: var(--text-main) !important;
+    color: #FFFFFF !important;
+    border-color: var(--text-main) !important;
+}
+
+/* Small Button Variant */
+.btn-luxury-sm, .btn-brutalist-sm, .btn-sm {
+    padding: 0.38rem 0.75rem !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* Close Button */
+.btn-close {
+    border-radius: 0 !important;
+    opacity: 0.8;
+}
+
+/* =====================================================================
+   Badges, Status Indicators, & Tags
+   ===================================================================== */
+.badge-luxury, .badge-brutalist, .badge {
+    font-family: var(--font-body) !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    padding: 3px 8px !important;
+    border-radius: 0 !important;
+    text-transform: uppercase !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.badge-luxury-success, .badge-brutalist-income, .badge-brutalist-success {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--text-main) !important;
+}
+
+.badge-luxury-danger, .badge-brutalist-expense, .badge-brutalist-danger {
+    background-color: var(--danger-bg) !important;
+    color: var(--accent-red) !important;
+    border: 1px solid var(--accent-red) !important;
+}
+
+.badge-luxury-warning, .badge-brutalist-warning {
+    background-color: var(--warning-bg) !important;
+    color: var(--warning-color) !important;
+    border: 1px solid var(--warning-color) !important;
+}
+
+.badge-luxury-wine {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--text-main) !important;
+}
+
+.badge-luxury-neutral, .badge-brutalist-neutral {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border-neutral) !important;
+}
+
+/* =====================================================================
+   Precision Forms & Input Fields
+   ===================================================================== */
+.form-luxury label, .form-label {
+    font-family: var(--font-body) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 0.35rem !important;
+    display: block;
+}
+
+.form-luxury .form-control, 
+.form-luxury .form-select,
+.form-control,
+.form-select {
+    border-radius: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-body) !important;
+    padding: 0.65rem 0.85rem !important;
+    font-size: 0.88rem !important;
+    box-shadow: none !important;
+    transition: border-color 0.12s ease;
+}
+
+.form-luxury .form-control:focus, 
+.form-luxury .form-select:focus,
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--text-main) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px var(--text-main) !important;
+    background-color: #FFFFFF !important;
+}
+
+.form-control[readonly] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.input-group-text {
+    border-radius: 0 !important;
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-mono) !important;
+}
+
+.form-check-input {
+    border-radius: 0 !important;
+    border: 1px solid var(--text-main) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--text-main) !important;
+    border-color: var(--text-main) !important;
+}
+
+/* Filter Strip Box */
+.card-luxury.p-3 {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* =====================================================================
+   AI Financial Intelligence Terminal
+   ===================================================================== */
+.ai-terminal {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-dark);
+    border-top: 3px solid var(--border-dark);
+    padding: 1.75rem;
+    border-radius: 0 !important;
+}
+
+.ai-terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-dark);
+    margin-bottom: 1.25rem;
+}
+
+.ai-terminal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
+    color: var(--text-main);
+}
+
+.ai-query-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.quick-pill {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: 5px 11px !important;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+}
+
+.quick-pill:hover {
+    background-color: var(--text-main) !important;
+    color: #FFFFFF !important;
+    border-color: var(--text-main) !important;
+}
+
+.ai-chat-response {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-red) !important;
+    padding: 1.4rem;
+    margin-top: 1.25rem;
+    font-size: 0.92rem;
+    font-family: var(--font-body);
+    line-height: 1.65;
+}
+
+/* =====================================================================
+   Modals & Popups (Institutional Brutalism)
+   ===================================================================== */
+.modal-content {
+    background-color: var(--bg-main) !important;
+    border: 2px solid var(--text-main) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.modal-header {
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--text-main) !important;
+    border-radius: 0 !important;
+    padding: 1rem 1.4rem !important;
+}
+
+.modal-header .modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    letter-spacing: -0.015em;
+    color: var(--text-main);
+}
+
+.modal-body {
+    padding: 1.5rem !important;
+    background-color: var(--bg-surface);
+}
+
+.modal-footer {
+    background-color: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-neutral) !important;
+    border-radius: 0 !important;
+    padding: 0.85rem 1.4rem !important;
+}
+
+/* =====================================================================
+   Progress Bars & Line Displays
+   ===================================================================== */
+.progress {
+    border-radius: 0 !important;
+    background-color: var(--bg-secondary) !important;
+    height: 5px !important;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: 0 !important;
+    background-color: var(--text-main) !important;
+}
+
+.progress-bar.bg-wine {
+    background-color: var(--text-main) !important;
+}
+
+.progress-bar.bg-danger {
+    background-color: var(--accent-red) !important;
+}
+
+/* =====================================================================
+   Alerts & Notifications
+   ===================================================================== */
+.alert-luxury, .alert {
+    border-radius: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-left: 4px solid var(--text-main) !important;
+    padding: 0.9rem 1.25rem !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 1.5rem !important;
+    font-family: var(--font-body);
+}
+
+.alert-luxury-success, .alert-success {
+    background-color: var(--bg-secondary) !important;
+    border-left-color: var(--text-main) !important;
+    color: var(--text-main) !important;
+}
+
+.alert-luxury-danger, .alert-danger {
+    background-color: var(--danger-bg) !important;
+    border-left-color: var(--accent-red) !important;
+    color: var(--accent-red) !important;
+}
+
+.alert-luxury-warning, .alert-warning {
+    background-color: var(--warning-bg) !important;
+    border-left-color: var(--warning-color) !important;
+    color: var(--warning-color) !important;
+}
+
+.alert-luxury-info, .alert-info {
+    background-color: var(--bg-secondary) !important;
+    border-left-color: var(--text-main) !important;
+    color: var(--text-main) !important;
+}
+
+/* =====================================================================
+   Lists, Groups, & Structural Divides
+   ===================================================================== */
+.list-group {
+    border-radius: 0 !important;
+}
+
+.list-group-item {
+    border-radius: 0 !important;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: transparent;
+    padding: 0.75rem 0;
+    font-family: var(--font-body);
+}
+
+.border-bottom {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.border-top {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* =====================================================================
+   Footer (Institutional Masthead Style)
+   ===================================================================== */
+.footer-luxury {
+    background-color: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-dark) !important;
+    padding: 2rem 0 !important;
+    margin-top: auto;
+    font-size: 0.78rem;
+    font-family: var(--font-body);
+    color: var(--text-muted);
+}
+
+.footer-luxury span.fw-semibold {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+/* =====================================================================
+   Chart Canvas Wrappers
+   ===================================================================== */
+canvas {
+    font-family: var(--font-body) !important;
+}
+
+/* =====================================================================
+   Responsive Media Queries & Mobile Architecture
+   ===================================================================== */
+@media (max-width: 1199.98px) {
+    .navbar-luxury {
+        padding: 0.65rem 1rem !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    h1, .display-1 { 
+        font-size: 2.45rem; 
+    }
+    h2, .display-2 { 
+        font-size: 1.95rem; 
+    }
+    
+    .stat-box .stat-value {
+        font-size: 2.25rem;
+    }
+
+    .navbar-collapse {
+        background-color: var(--text-main);
+        padding: 1rem 0;
+        border-top: 1px solid #333333;
+        margin-top: 0.5rem;
+    }
+
+    .navbar-luxury .nav-link {
+        padding: 0.6rem 0.5rem !important;
+    }
+
+    .ai-query-box {
+        flex-direction: column;
+    }
+
+    .ai-query-box button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    h1, .display-1 { 
+        font-size: 2.05rem; 
+    }
+    
+    .stat-box {
+        padding: 1.1rem 1.2rem;
+    }
+
+    .stat-box .stat-value {
+        font-size: 1.95rem;
+    }
+
+    .card-luxury {
+        padding: 1.1rem;
+    }
+}

@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}GST Tax Compliance & Filings — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Statutory Tax Compliance</span>
+                <span class="mx-2">•</span>
+                <span>GSTIN: {{ current_user.gstin or '33AABCT1332L1Z4' }} (Tamil Nadu)</span>
+            </div>
+            <h1 class="display-1 mb-1">GST Compliance & Tax Filings</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Official monthly GSTR-1 outward supply statements and GSTR-3B tax summary reconciliation for {{ financial_year }}.
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('financial_reports') }}" class="btn-luxury btn-luxury-outline">
+                <i class="bi bi-file-earmark-text me-1"></i> P&L Report
+            </a>
+            <button onclick="window.print()" class="btn-luxury btn-luxury-wine">
+                <i class="bi bi-printer me-1"></i> Print Tax Summary
+            </button>
+        </div>
+    </div>
+
+    <!-- GST KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-box accent-wine">
+                <div class="stat-label">
+                    <span>Cumulative Taxable Turnover</span>
+                    <i class="bi bi-receipt text-wine"></i>
+                </div>
+                <div class="stat-value text-wine">{{ total_taxable|inr }}</div>
+                <div class="stat-subtitle">Aggregate taxable supply for FY 2026-27</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box accent-danger">
+                <div class="stat-label">
+                    <span>Total GST Liability (CGST + SGST)</span>
+                    <i class="bi bi-cash text-danger"></i>
+                </div>
+                <div class="stat-value text-danger">{{ total_gst_paid|inr }}</div>
+                <div class="stat-subtitle">Calculated at applicable 5% & 12% textile rates</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box accent-green">
+                <div class="stat-label">
+                    <span>Input Tax Credit (ITC) Claimed</span>
+                    <i class="bi bi-shield-check text-success"></i>
+                </div>
+                <div class="stat-value text-success">{{ total_itc_claimed|inr }}</div>
+                <div class="stat-subtitle">Eligible input tax credit on raw cotton & yarn</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GSTR-3B Filings Table -->
+    <div class="card-luxury card-luxury-accent mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Monthly Return Reconciliation</span>
+                <h3 class="fs-4 mb-0">GSTR-3B Monthly Tax Filings</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">{{ gstr3b_records|length }} Return Periods</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th>Tax Period</th>
+                        <th class="text-end">Taxable Turnover</th>
+                        <th class="text-end">CGST (2.5% / 6%)</th>
+                        <th class="text-end">SGST (2.5% / 6%)</th>
+                        <th class="text-end">Total GST</th>
+                        <th class="text-end">ITC Claimed</th>
+                        <th class="text-end">Net Cash Tax Paid</th>
+                        <th>Filing Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in gstr3b_records %}
+                    <tr>
+                        <td class="font-mono fw-bold">{{ r.period }}</td>
+                        <td class="text-end font-mono">{{ r.taxable_amount|inr }}</td>
+                        <td class="text-end font-mono text-muted">{{ r.cgst|inr }}</td>
+                        <td class="text-end font-mono text-muted">{{ r.sgst|inr }}</td>
+                        <td class="text-end font-mono fw-bold text-wine">{{ r.total_tax|inr }}</td>
+                        <td class="text-end font-mono text-success">{{ r.itc_claimed|inr }}</td>
+                        <td class="text-end font-mono fw-bold text-danger">{{ r.net_tax_payable|inr }}</td>
+                        <td>
+                            {% if r.status == 'Filed' %}
+                            <span class="badge-luxury badge-luxury-success">
+                                <i class="bi bi-check2 me-1"></i> Filed on {{ r.filing_date.strftime('%d-%m-%Y') if r.filing_date else '20th' }}
+                            </span>
+                            {% else %}
+                            <span class="badge-luxury badge-luxury-warning">Due 20th</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Textile Tax Classifications & HSN Code Master Reference -->
+    <div class="card-luxury card-luxury-wine">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Indian GST Tariff Master</span>
+                <h3 class="fs-4 mb-0">Applicable HSN Codes & Textile Slabs</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">CBIC Textile Rate Schedule</span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="p-3 bg-secondary border">
+                    <span class="eyebrow-label d-block">HSN 5208 / 5209</span>
+                    <strong class="d-block mb-1">Woven Cotton Fabrics</strong>
+                    <div class="font-mono text-wine fw-bold">GST Rate: 5.0%</div>
+                    <div class="small text-muted">CGST 2.5% + SGST 2.5%</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-secondary border">
+                    <span class="eyebrow-label d-block">HSN 5407 / 5512</span>
+                    <strong class="d-block mb-1">Synthetic & Polyester Cloth</strong>
+                    <div class="font-mono text-wine fw-bold">GST Rate: 5.0% / 12.0%</div>
+                    <div class="small text-muted">Blended & synthetic textiles</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-secondary border">
+                    <span class="eyebrow-label d-block">HSN 5205 / 5509</span>
+                    <strong class="d-block mb-1">Cotton & Spun Yarn Cones</strong>
+                    <div class="font-mono text-wine fw-bold">GST Rate: 5.0%</div>
+                    <div class="small text-muted">Ring spun yarn 40s/60s count</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-secondary border">
+                    <span class="eyebrow-label d-block">SAC 9988</span>
+                    <strong class="d-block mb-1">Job Work & Dyeing Processing</strong>
+                    <div class="font-mono text-wine fw-bold">GST Rate: 5.0% / 12.0%</div>
+                    <div class="small text-muted">Registered textile job work services</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

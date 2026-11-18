@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Modify Transaction #{{ txn.txn_id }} — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card-luxury card-luxury-accent">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label">Audit Revision</span>
+                        <h2 class="fs-4 mb-0 font-serif">Modify Transaction #{{ txn.txn_id }}</h2>
+                    </div>
+                    <a href="{{ url_for('view_transactions') }}" class="btn-luxury btn-luxury-outline btn-luxury-sm">
+                        &larr; Ledger
+                    </a>
+                </div>
+                
+                <form method="POST" action="{{ url_for('edit_transaction', id=txn.txn_id) }}" class="form-luxury">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Transaction Type <span class="text-danger">*</span></label>
+                            <select name="txn_type" class="form-select" required>
+                                <option value="Expense" {% if txn.txn_type == 'Expense' %}selected{% endif %}>Expense (Outflow)</option>
+                                <option value="Income" {% if txn.txn_type == 'Income' %}selected{% endif %}>Income (Inflow)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Amount (₹ INR) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" name="amount" class="form-control font-mono fs-5" value="{{ txn.amount }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Corporate Account <span class="text-danger">*</span></label>
+                            <select name="account_id" class="form-select" required>
+                                {% for acc in accounts %}
+                                <option value="{{ acc.account_id }}" {% if acc.account_id == txn.account_id %}selected{% endif %}>
+                                    {{ acc.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Transaction Date <span class="text-danger">*</span></label>
+                            <input type="date" name="date" class="form-control font-mono" value="{{ txn.date.strftime('%Y-%m-%d') }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Party / Entity</label>
+                            <input type="text" name="party_name" class="form-control" value="{{ txn.party_name or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Reference #</label>
+                            <input type="text" name="reference_no" class="form-control font-mono" value="{{ txn.reference_no or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Description / Narration</label>
+                        <input type="text" name="description" class="form-control" value="{{ txn.description or '' }}">
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label>Category <span class="text-danger">*</span></label>
+                            <select name="category_id" class="form-select" required>
+                                {% for cat in categories %}
+                                <option value="{{ cat.category_id }}" {% if cat.category_id == txn.category_id %}selected{% endif %}>
+                                    {{ cat.name }} ({{ cat.type }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Payment Method</label>
+                            <select name="payment_method" class="form-select">
+                                <option value="Bank Transfer" {% if txn.payment_method == 'Bank Transfer' %}selected{% endif %}>Bank Transfer</option>
+                                <option value="UPI" {% if txn.payment_method == 'UPI' %}selected{% endif %}>UPI Instant</option>
+                                <option value="Cheque" {% if txn.payment_method == 'Cheque' %}selected{% endif %}>Cheque</option>
+                                <option value="Cash" {% if txn.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ url_for('view_transactions') }}" class="btn-luxury btn-luxury-outline">Cancel</a>
+                        <button type="submit" class="btn-luxury btn-luxury-wine">
+                            <i class="bi bi-save me-1"></i> Update Ledger Entry
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Financial Statements & Reports — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Statutory & Executive Reporting</span>
+                <span class="mx-2">•</span>
+                <span>Indian Accounting Standards (Ind AS) Format</span>
+            </div>
+            <h1 class="display-1 mb-1">Financial Statements & Reports</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Comprehensive Profit & Loss statement, Balance Sheet asset-liability reconciliation, and working capital summary.
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('tax_reports') }}" class="btn-luxury btn-luxury-outline">
+                <i class="bi bi-receipt me-1"></i> GST Compliance & Taxes
+            </a>
+            <button onclick="window.print()" class="btn-luxury btn-luxury-wine">
+                <i class="bi bi-printer me-1"></i> Print / Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Section 1: Profit and Loss Statement (Ind AS Style) -->
+    <div class="card-luxury card-luxury-accent mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Statement of Operations</span>
+                <h3 class="fs-4 mb-0">Profit and Loss Statement (P&L)</h3>
+            </div>
+            <span class="font-mono text-muted small">Period: Cumulative FY 2026-27</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">Particulars / Ledger Classification</th>
+                        <th class="text-end" style="width: 30%;">Amount (INR - ₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- I. REVENUE FROM OPERATIONS -->
+                    <tr class="table-light">
+                        <td class="fw-bold font-serif fs-6 text-wine">I. REVENUE FROM OPERATIONS</td>
+                        <td class="text-end font-mono fw-bold text-wine fs-6">{{ metrics.total_revenue|inr }}</td>
+                    </tr>
+                    {% for c in income_categories %}
+                    <tr>
+                        <td class="ps-4 text-secondary">{{ c[0] }}</td>
+                        <td class="text-end font-mono">{{ c[2]|inr }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- II. OPERATING EXPENDITURES -->
+                    <tr class="table-light">
+                        <td class="fw-bold font-serif fs-6 text-danger">II. OPERATING EXPENSES (COGS & Overheads)</td>
+                        <td class="text-end font-mono fw-bold text-danger fs-6">{{ metrics.total_expenses|inr }}</td>
+                    </tr>
+                    {% for c in expense_categories %}
+                    <tr>
+                        <td class="ps-4 text-secondary">{{ c[0] }}</td>
+                        <td class="text-end font-mono">{{ c[2]|inr }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- III. NET OPERATING PROFIT -->
+                    <tr class="border-top" style="border-top: 2px solid var(--border-dark) !important; background-color: var(--bg-secondary);">
+                        <td class="fw-bold font-serif fs-5 text-main">
+                            III. NET OPERATING SURPLUS / (DEFICIT)
+                            <span class="badge-luxury badge-luxury-neutral ms-2" style="font-size: 0.75rem;">Margin: {{ metrics.profit_margin }}%</span>
+                        </td>
+                        <td class="text-end font-mono fw-bold fs-5 {% if metrics.net_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {{ metrics.net_profit|inr }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Balance Sheet Summary (Assets & Liabilities) -->
+    <div class="card-luxury card-luxury-wine mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Statement of Financial Position</span>
+                <h3 class="fs-4 mb-0">Balance Sheet Asset & Liability Summary</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">Ind AS Balance Sheet</span>
+        </div>
+
+        <div class="row g-4">
+            <!-- ASSETS -->
+            <div class="col-lg-6">
+                <div class="p-3 bg-secondary border">
+                    <h5 class="font-serif fw-bold text-wine mb-3 border-bottom pb-2">
+                        <i class="bi bi-box-seam me-2"></i> Current Assets
+                    </h5>
+                    <table class="w-100 font-sans" style="font-size: 0.875rem;">
+                        <tbody>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Operational Bank Accounts</td>
+                                <td class="text-end font-mono fw-bold py-2">{{ metrics.bank_balance|inr }}</td>
+                            </tr>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Factory Petty Cash Holdings</td>
+                                <td class="text-end font-mono fw-bold py-2">{{ metrics.cash_balance|inr }}</td>
+                            </tr>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Trade Accounts Receivable (Customers)</td>
+                                <td class="text-end font-mono fw-bold text-wine py-2">{{ metrics.accounts_receivable|inr }}</td>
+                            </tr>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Textile Raw Material & Finished Inventory Asset</td>
+                                <td class="text-end font-mono fw-bold py-2">{{ inventory_valuation|inr }}</td>
+                            </tr>
+                            <tr class="border-top" style="border-top: 2px solid var(--border-dark) !important;">
+                                <td class="py-2 fw-bold font-serif fs-6">TOTAL CURRENT ASSETS</td>
+                                <td class="text-end font-mono fw-bold fs-6 text-wine py-2">
+                                    {{ (metrics.bank_balance + metrics.cash_balance + metrics.accounts_receivable + inventory_valuation)|inr }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LIABILITIES -->
+            <div class="col-lg-6">
+                <div class="p-3 bg-secondary border">
+                    <h5 class="font-serif fw-bold text-danger mb-3 border-bottom pb-2">
+                        <i class="bi bi-shield-lock me-2"></i> Current Liabilities & Capital
+                    </h5>
+                    <table class="w-100 font-sans" style="font-size: 0.875rem;">
+                        <tbody>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Trade Accounts Payable (Vendors & Mills)</td>
+                                <td class="text-end font-mono fw-bold text-danger py-2">{{ metrics.accounts_payable|inr }}</td>
+                            </tr>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Cash Credit (CC) Facility Line Drawn</td>
+                                <td class="text-end font-mono fw-bold text-danger py-2">{{ metrics.credit_balance|inr }}</td>
+                            </tr>
+                            <tr class="border-bottom py-2">
+                                <td class="py-2">Retained Operating Surplus</td>
+                                <td class="text-end font-mono fw-bold text-success py-2">{{ metrics.net_profit|inr }}</td>
+                            </tr>
+                            <tr class="border-top" style="border-top: 2px solid var(--border-dark) !important;">
+                                <td class="py-2 fw-bold font-serif fs-6">TOTAL CURRENT LIABILITIES & OBLIGATIONS</td>
+                                <td class="text-end font-mono fw-bold fs-6 text-danger py-2">
+                                    {{ (metrics.accounts_payable + metrics.credit_balance)|inr }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

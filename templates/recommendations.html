@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+{% block title %}AI Financial Intelligence — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Machine Learning & Heuristic Analytics</span>
+                <span class="mx-2">•</span>
+                <span>Grounded on Live Ledger Figures</span>
+            </div>
+            <h1 class="display-1 mb-1">AI Financial Intelligence Hub</h1>
+            <p class="text-muted-custom mb-0" style="font-size: 0.875rem;">
+                Autonomous financial diagnostics, statistical anomaly detection, cash flow projections, and conversational query terminal.
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <span class="badge-luxury badge-luxury-success py-2 px-3">
+                <i class="bi bi-cpu me-1"></i> NLP & Statistical Models Active
+            </span>
+        </div>
+    </div>
+
+    <!-- Section 1: Interactive Conversational AI Financial Assistant Terminal -->
+    <div class="ai-terminal mb-5">
+        <div class="ai-terminal-header">
+            <div>
+                <span class="eyebrow-label text-wine">Conversational Executive Terminal</span>
+                <h3 class="mb-0 fs-4">AI Financial Intelligence Assistant</h3>
+                <div class="small text-muted font-sans">
+                    Ask natural questions grounded strictly in actual database records. No fabricated data.
+                </div>
+            </div>
+            <span class="badge-luxury badge-luxury-wine font-mono">Permission-Aware Local Query</span>
+        </div>
+
+        <!-- Quick Query Suggestion Pills -->
+        <div class="mb-3">
+            <span class="small text-muted-custom font-mono text-uppercase me-2" style="font-size: 0.72rem;">Suggested Queries:</span>
+            <div class="d-flex flex-wrap gap-2 mt-1" id="quickPills">
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="How much did the company spend this month?">
+                    How much did we spend this month?
+                </button>
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="What is our current net profit?">
+                    What is our current net profit?
+                </button>
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="How much money is outstanding from customers?">
+                    How much is outstanding from customers?
+                </button>
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="What are our largest operating expenses?">
+                    What are our largest operating expenses?
+                </button>
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="How is cash flow changing?">
+                    How is cash flow changing?
+                </button>
+                <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm quick-pill" data-q="What financial risks should management review?">
+                    What financial risks should management review?
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form id="aiChatForm" class="ai-query-box">
+            <input type="text" id="aiQueryInput" class="form-control rounded-0 font-sans" placeholder="Type your financial inquiry (e.g., 'What is our outstanding receivables balance?')..." required autocomplete="off" style="border: 1px solid var(--border-color); padding: 0.75rem 1rem;">
+            <button type="submit" id="aiSubmitBtn" class="btn-luxury btn-luxury-wine px-4">
+                <i class="bi bi-send me-2"></i> Query AI
+            </button>
+        </form>
+
+        <!-- Dynamic Response Box -->
+        <div id="aiResponseContainer" style="display: none;" class="ai-chat-response">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                <strong class="font-mono small text-wine" id="resGroundingType">Verified DB Aggregation</strong>
+                <span class="badge-luxury badge-luxury-neutral" id="resTime">Just now</span>
+            </div>
+            <div id="resAnswerText" class="font-sans mb-3" style="line-height: 1.6; font-size: 0.95rem;"></div>
+            
+            <div id="resGroundingTable" class="table-responsive mt-2">
+                <table class="table-luxury">
+                    <thead>
+                        <tr>
+                            <th>Grounding Metric</th>
+                            <th class="text-end">Ledger Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resGroundingRows"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Predictive Forecasting & Anomaly Detection -->
+    <div class="row g-4 mb-5">
+        <!-- Spending Forecast (Scikit-Learn Linear Regression) -->
+        <div class="col-lg-7">
+            <div class="card-luxury card-luxury-accent h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="eyebrow-label">Time-Series Machine Learning</span>
+                        <h4 class="mb-0">Operating Outlay Forecast (3-Month Horizon)</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-warning">Estimate / Projection</span>
+                </div>
+                
+                <p class="small text-muted-custom mb-3 font-sans">
+                    Scikit-Learn Linear Regression evaluated on historical monthly expenditures. 
+                    Trend direction: <strong class="text-uppercase text-wine font-mono">{{ forecast.trend_direction }}</strong> 
+                    (MAE: ₹{{ forecast.mae }}, RMSE: ₹{{ forecast.rmse }}).
+                </p>
+
+                <div style="height: 250px; position: relative;">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+
+                <div class="mt-3 p-2 bg-secondary small text-muted font-mono" style="font-size: 0.75rem; border: 1px solid var(--border-color);">
+                    <i class="bi bi-info-circle me-1"></i> Forecasted Values: 
+                    {% for m, v in zip(forecast.forecast_months, forecast.forecast_values) %}
+                    <strong>{{ m }}:</strong> {{ v|inr }} &bull;
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistical Spending Anomalies (Z-Score) -->
+        <div class="col-lg-5">
+            <div class="card-luxury card-luxury-wine h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="eyebrow-label">Statistical Outliers</span>
+                        <h4 class="mb-0">Spending Anomaly Detection</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-danger">Z-Score &ge; 2.5</span>
+                </div>
+
+                <p class="small text-muted-custom mb-3 font-sans">
+                    Flags transactions that deviate significantly from category historical baseline.
+                </p>
+
+                {% if anomalies %}
+                <div class="table-responsive">
+                    <table class="table-luxury">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category / Description</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in anomalies %}
+                            <tr>
+                                <td class="font-mono text-muted" style="font-size: 0.75rem;">{{ a.date }}</td>
+                                <td>
+                                    <div class="fw-semibold text-main">{{ a.category }}</div>
+                                    <div class="small text-muted text-truncate" style="max-width: 180px;">{{ a.description }}</div>
+                                </td>
+                                <td class="text-end font-mono text-danger fw-bold">
+                                    {{ a.amount|inr }}
+                                    <div class="small text-muted" style="font-size: 0.68rem;">Avg: {{ a.avg_category_amount|inr }}</div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-shield-check fs-2 text-success d-block mb-2"></i>
+                    No spending anomalies detected in the current active period.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Strategic Corporate Financial Risk Alerts -->
+    <div class="card-luxury mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Risk Surveillance</span>
+                <h3 class="fs-4 mb-0">Financial Risk Assessment & Board Recommendations</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">Executive Audit</span>
+        </div>
+
+        <div class="row g-3">
+            {% for risk in risk_alerts %}
+            <div class="col-md-4">
+                <div class="p-3 h-100" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-left: 4px solid {% if risk.severity == 'high' %}var(--danger-color){% elif risk.severity == 'medium' %}var(--warning-color){% else %}var(--antique-brass){% endif %};">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge-luxury {% if risk.severity == 'high' %}badge-luxury-danger{% elif risk.severity == 'medium' %}badge-luxury-warning{% else %}badge-luxury-neutral{% endif %}">
+                            {{ risk.severity|upper }} PRIORITY
+                        </span>
+                    </div>
+                    <h5 class="fw-bold mb-1">{{ risk.title }}</h5>
+                    <p class="small text-secondary mb-2">{{ risk.description }}</p>
+                    <div class="small fw-semibold text-wine">
+                        <i class="bi bi-arrow-right-circle me-1"></i> {{ risk.recommendation }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Section 4: Budget Recommendations & Pacing Analysis -->
+    <div class="card-luxury mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Operating Pacing</span>
+                <h3 class="fs-4 mb-0">Budget Pacing & Run-Rate Recommendations</h3>
+            </div>
+            <span class="font-mono small text-muted">Month: {{ target_month }}</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th class="text-end">Budget Limit</th>
+                        <th class="text-end">Spent to Date</th>
+                        <th class="text-end">Remaining</th>
+                        <th class="text-center">Utilization</th>
+                        <th>Projected Month-End</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in analysis.budget_insights %}
+                    <tr>
+                        <td class="fw-semibold text-main">{{ b.category }}</td>
+                        <td class="text-end font-mono">{{ b.budget|inr }}</td>
+                        <td class="text-end font-mono fw-bold text-wine">{{ b.spent|inr }}</td>
+                        <td class="text-end font-mono">{{ b.remaining|inr }}</td>
+                        <td class="text-center">
+                            <span class="badge-luxury {% if b.utilization_pct > 100 %}badge-luxury-danger{% elif b.utilization_pct >= 85 %}badge-luxury-warning{% else %}badge-luxury-success{% endif %}">
+                                {{ b.utilization_pct }}%
+                            </span>
+                        </td>
+                        <td class="font-mono small text-secondary">
+                            {{ b.projected_total|inr }}
+                        </td>
+                        <td>
+                            {% if b.status == 'exceeded' %}
+                            <span class="text-danger small fw-semibold"><i class="bi bi-x-circle me-1"></i> Over Budget</span>
+                            {% elif b.status == 'warning' %}
+                            <span class="text-warning small fw-semibold"><i class="bi bi-exclamation-triangle me-1"></i> High Pace</span>
+                            {% else %}
+                            <span class="text-success small fw-semibold"><i class="bi bi-check-circle me-1"></i> On Track</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            No active budgets defined for {{ target_month }}. <a href="{{ url_for('budgets') }}" class="text-wine fw-bold">Set budgets &rarr;</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mandatory Legal & Financial AI Disclaimer -->
+    <div class="p-3 bg-secondary small text-muted font-mono" style="border: 1px solid var(--border-color); font-size: 0.75rem;">
+        <i class="bi bi-shield-lock me-1"></i> {{ disclaimer }}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Forecast Chart
+    const fCtx = document.getElementById('forecastChart');
+    if (fCtx) {
+        const histLabels = {{ forecast.historical_months|tojson }};
+        const histValues = {{ forecast.historical_values|tojson }};
+        const foreLabels = {{ forecast.forecast_months|tojson }};
+        const foreValues = {{ forecast.forecast_values|tojson }};
+
+        const allLabels = histLabels.concat(foreLabels);
+        const histDataPadded = histValues.concat(new Array(foreLabels.length).fill(null));
+        const foreDataPadded = new Array(histLabels.length - 1).fill(null).concat([histValues[histValues.length - 1]]).concat(foreValues);
+
+        new Chart(fCtx, {
+            type: 'line',
+            data: {
+                labels: allLabels,
+                datasets: [
+                    {
+                        label: 'Historical Actuals (Ledger)',
+                        data: histDataPadded,
+                        borderColor: '#481D2B',
+                        backgroundColor: '#481D2B',
+                        borderWidth: 2,
+                        tension: 0.2,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'AI Forecast (Linear Model)',
+                        data: foreDataPadded,
+                        borderColor: '#A78A56',
+                        backgroundColor: '#A78A56',
+                        borderDash: [6, 4],
+                        borderWidth: 2,
+                        tension: 0.2,
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { family: 'Inter', size: 11 }, color: '#191817' }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: '#EAE4D9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 } } },
+                    y: {
+                        grid: { color: '#EAE4D9' },
+                        ticks: {
+                            font: { family: 'JetBrains Mono', size: 10 },
+                            callback: function(v) { return '₹' + v.toLocaleString('en-IN'); }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Interactive AI Assistant Q&A
+    const chatForm = document.getElementById('aiChatForm');
+    const queryInput = document.getElementById('aiQueryInput');
+    const responseContainer = document.getElementById('aiResponseContainer');
+    const resGroundingType = document.getElementById('resGroundingType');
+    const resAnswerText = document.getElementById('resAnswerText');
+    const resGroundingRows = document.getElementById('resGroundingRows');
+    const submitBtn = document.getElementById('aiSubmitBtn');
+
+    // Quick query pill clicks
+    document.querySelectorAll('.quick-pill').forEach(btn => {
+        btn.addEventListener('click', function() {
+            queryInput.value = this.getAttribute('data-q');
+            submitQuery(queryInput.value);
+        });
+    });
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const q = queryInput.value.trim();
+        if (q) submitQuery(q);
+    });
+
+    function submitQuery(question) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Analyzing...';
+
+        fetch("{{ url_for('api_ai_chat') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question })
+        })
+        .then(res => res.json())
+        .then(data => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send me-2"></i> Query AI';
+
+            if (data.answer) {
+                resGroundingType.textContent = data.type || 'Verified Database Aggregation';
+                resAnswerText.innerHTML = data.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+                resGroundingRows.innerHTML = '';
+                if (data.grounding && data.grounding.length > 0) {
+                    data.grounding.forEach(g => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td class="font-sans fw-semibold">${g.metric}</td><td class="text-end font-mono text-wine fw-bold">${g.value}</td>`;
+                        resGroundingRows.appendChild(tr);
+                    });
+                    document.getElementById('resGroundingTable').style.display = 'block';
+                } else {
+                    document.getElementById('resGroundingTable').style.display = 'none';
+                }
+
+                responseContainer.style.display = 'block';
+                responseContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        })
+        .catch(err => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send me-2"></i> Query AI';
+            alert('Failed to contact AI Assistant service: ' + err);
+        });
+    }
+});
+</script>
+{% endblock %}

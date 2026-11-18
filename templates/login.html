@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Sign In — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-md-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card-luxury card-luxury-wine p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label text-wine">Authorized Access</span>
+                        <h2 class="font-serif fs-3 mb-0">Executive Sign In</h2>
+                    </div>
+                    <span class="badge-luxury badge-luxury-wine font-mono">₹ INR</span>
+                </div>
+
+                <p class="small text-muted-custom font-sans mb-4">
+                    Enter your corporate credentials to access the AI financial intelligence operating system.
+                </p>
+
+                <form method="POST" action="{{ url_for('login') }}" class="form-luxury">
+                    <div class="mb-3">
+                        <label>Username or Email Address</label>
+                        <input type="text" name="username" class="form-control" placeholder="alice or alice@example.com" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input rounded-0" type="checkbox" id="remember" name="remember">
+                            <label class="form-check-label small font-sans text-secondary" for="remember">Remember this workstation</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-luxury btn-luxury-wine w-100 py-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Authenticate & Enter
+                    </button>
+                </form>
+
+                <div class="mt-4 p-3 bg-secondary border">
+                    <div class="font-mono small text-wine fw-bold mb-1">// DEMO CORPORATE ACCOUNTS</div>
+                    <div class="font-mono small text-dark"><strong>alice</strong> / <code>password123</code> &nbsp;&mdash;&nbsp; Aura TexFab Mills (Full Company Dataset)</div>
+                    <div class="font-mono small text-muted"><strong>bob</strong> &nbsp;&nbsp;/ <code>password123</code> &nbsp;&mdash;&nbsp; Standard User Profile</div>
+                </div>
+
+                <div class="text-center mt-3 pt-2">
+                    <span class="small text-muted">Need a corporate account?</span>
+                    <a href="{{ url_for('register') }}" class="small fw-bold text-wine text-decoration-none ms-1">Register Enterprise &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

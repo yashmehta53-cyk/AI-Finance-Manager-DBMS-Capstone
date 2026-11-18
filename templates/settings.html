@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Corporate Settings — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Platform Configuration</span>
+                <span class="mx-2">•</span>
+                <span>Corporate Entity & Database Engine</span>
+            </div>
+            <h1 class="display-1 mb-1">Corporate Settings & Architecture</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Entity legal identity, Indian GSTIN registration, currency parameters, database connectivity, and AI parameters.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Company Profile & GSTIN Form -->
+        <div class="col-lg-7">
+            <div class="card-luxury card-luxury-accent">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label">Statutory Entity Profile</span>
+                        <h4 class="mb-0">Corporate Business Information</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-success">Compliant</span>
+                </div>
+
+                <form method="POST" action="{{ url_for('update_profile') }}" class="form-luxury">
+                    <div class="mb-3">
+                        <label>Registered Company Name</label>
+                        <input type="text" name="company_name" class="form-control" value="{{ current_user.company_name or 'Aura TexFab Mills (India) Ltd.' }}" required>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Goods & Services Tax Identification (GSTIN)</label>
+                            <input type="text" name="gstin" class="form-control font-mono" value="{{ current_user.gstin or '33AABCT1332L1Z4' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Jurisdiction State</label>
+                            <input type="text" class="form-control" value="Tamil Nadu (State Code: 33)" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label>Functional Currency</label>
+                            <input type="text" class="form-control font-mono" value="INR (₹)" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Financial Year Cycle</label>
+                            <input type="text" class="form-control font-mono" value="April 1 – March 31" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Accounting Standard</label>
+                            <input type="text" class="form-control" value="Indian AS / GST Ready" readonly>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-luxury btn-luxury-wine">
+                        <i class="bi bi-save me-1"></i> Save Corporate Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Database Engine & AI Architecture Diagnostic Box -->
+        <div class="col-lg-5">
+            <!-- Database Engine Diagnostic -->
+            <div class="card-luxury card-luxury-wine mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label">Storage Architecture</span>
+                        <h4 class="mb-0">Database Engine Status</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-neutral">Dual-Engine Ready</span>
+                </div>
+
+                <div class="p-3 bg-secondary border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="font-sans">Target Database Engine:</strong>
+                        <span class="badge-luxury badge-luxury-wine font-mono">MySQL 8+ / PyMySQL</span>
+                    </div>
+                    <div class="small font-mono text-muted">
+                        Database Name: <strong>textile_factory</strong><br>
+                        Import File: <strong>textile-factory-v4-sql-mysql.sql</strong><br>
+                        Connection Pooling: <strong>Active (Pre-Ping, 3600s Recycle)</strong>
+                    </div>
+                </div>
+
+                <div class="small text-muted-custom font-sans">
+                    <p class="mb-1"><strong>MySQL Configuration Details (.env):</strong></p>
+                    <code class="d-block p-2 bg-secondary border font-mono small text-dark mb-2">
+USE_MYSQL=True<br>
+DB_USER=root<br>
+DB_PASSWORD=YOUR_ACTUAL_PASSWORD<br>
+DB_HOST=localhost<br>
+DB_PORT=3306<br>
+DB_NAME=textile_factory
+                    </code>
+                    <p class="mb-0" style="font-size: 0.78rem;">
+                        Automated fallback to synchronized local SQLite database ensures zero application disruption if MySQL server is restarting or undergoing offline maintenance.
+                    </p>
+                </div>
+            </div>
+
+            <!-- AI Engine Diagnostics -->
+            <div class="card-luxury h-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="eyebrow-label">Intelligence Stack</span>
+                        <h4 class="mb-0">AI Engine Parameters</h4>
+                    </div>
+                    <span class="badge-luxury badge-luxury-success">Active</span>
+                </div>
+
+                <ul class="list-unstyled font-sans small text-secondary mb-0">
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span>Transaction Classifier:</span>
+                        <strong class="font-mono text-dark">TF-IDF + MultinomialNB</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span>Spending Forecaster:</span>
+                        <strong class="font-mono text-dark">Scikit-Learn Linear Regression</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span>Anomaly Detection:</span>
+                        <strong class="font-mono text-dark">Z-Score Deviation (&ge; 2.5 &sigma;)</strong>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span>Conversational Query:</span>
+                        <strong class="font-mono text-dark">Deterministic DB Aggregator</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

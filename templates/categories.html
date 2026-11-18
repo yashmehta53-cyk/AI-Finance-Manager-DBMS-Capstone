@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}HSN Codes & Financial Categories — AI Finance Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header Banner -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end pb-3 mb-4 border-bottom" style="border-color: var(--border-color) !important;">
+        <div>
+            <div class="eyebrow-label mb-1">
+                <span class="text-wine fw-bold">Classification Master</span>
+                <span class="mx-2">•</span>
+                <span>HSN / SAC & Ledger Categorization</span>
+            </div>
+            <h1 class="display-1 mb-1">Financial Categories & HSN Master</h1>
+            <p class="text-muted-custom mb-0 font-sans" style="font-size: 0.875rem;">
+                Classification mapping for income streams, textile procurement outlays, and applicable GST rate slabs.
+            </p>
+        </div>
+        <div>
+            <button type="button" class="btn-luxury btn-luxury-wine" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="bi bi-tag me-1"></i> New Category
+            </button>
+        </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="card-luxury card-luxury-accent">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+                <span class="eyebrow-label">Chart of Accounts</span>
+                <h3 class="fs-4 mb-0">Active Transaction Categories</h3>
+            </div>
+            <span class="badge-luxury badge-luxury-neutral">{{ categories|length }} Categories Registered</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Classification</th>
+                        <th>HSN / SAC Reference</th>
+                        <th>Standard GST Slab</th>
+                        <th>Scope</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td class="fw-semibold text-main">
+                            {{ cat.name }}
+                        </td>
+                        <td>
+                            <span class="badge-luxury {{ 'badge-luxury-success' if cat.type == 'Income' else 'badge-luxury-danger' }}">
+                                {{ cat.type }}
+                            </span>
+                        </td>
+                        <td class="font-mono small">
+                            {{ cat.hsn_sac_code or '—' }}
+                        </td>
+                        <td class="font-mono text-wine fw-bold">
+                            {{ cat.default_gst_rate or '5.00' }}%
+                        </td>
+                        <td>
+                            {% if cat.user_id %}
+                            <span class="badge-luxury badge-luxury-wine">User Entity</span>
+                            {% else %}
+                            <span class="badge-luxury badge-luxury-neutral">Corporate Master</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if cat.user_id %}
+                            <form method="POST" action="{{ url_for('delete_category', id=cat.category_id) }}" onsubmit="return confirm('Delete this custom category?');" class="d-inline m-0">
+                                <button type="submit" class="btn-luxury btn-luxury-outline btn-luxury-sm text-danger py-0 px-2" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted font-mono small">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal: Add Category -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border">
+            <div class="modal-header bg-secondary rounded-0">
+                <h5 class="modal-title font-serif mb-0">Define Ledger Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_category') }}" class="form-luxury">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Category Label <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Ring Spun Yarn Purchases, Export Freight..." required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Accounting Flow <span class="text-danger">*</span></label>
+                            <select name="type" class="form-select" required>
+                                <option value="Expense" selected>Expense (Cost / Outflow)</option>
+                                <option value="Income">Income (Revenue / Inflow)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>HSN / SAC Code</label>
+                            <input type="text" name="hsn_sac_code" class="form-control font-mono" placeholder="e.g. 5208">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Default GST Tax Rate Slab</label>
+                        <select name="default_gst_rate" class="form-select">
+                            <option value="0.00">0% (Nil / Exempt)</option>
+                            <option value="5.00" selected>5% (Textile Raw Materials & Fabrics)</option>
+                            <option value="12.00">12% (Yarn & Chemicals)</option>
+                            <option value="18.00">18% (Commercial Services)</option>
+                            <option value="28.00">28% (Luxury)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer bg-secondary">
+                    <button type="button" class="btn-luxury btn-luxury-outline btn-luxury-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-luxury btn-luxury-wine btn-luxury-sm">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
