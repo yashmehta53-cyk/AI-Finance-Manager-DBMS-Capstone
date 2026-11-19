@@ -27,5 +27,5 @@ COPY . .
 # Expose Flask default port
 EXPOSE 5000
 
-# Run with Gunicorn WSGI server or Flask
-CMD ["python", "app.py"]
+# Run with Gunicorn WSGI server binding to Render's dynamic PORT
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5000} 'app:create_app()'"]
